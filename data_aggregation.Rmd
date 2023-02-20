@@ -1,0 +1,101 @@
+---
+title: "data_aggregation"
+output: html_document
+date: "2023-02-15"
+---
+
+## Cleaning environment
+
+```{r}
+rm(list=ls())
+```
+
+```{r}
+# Load packages
+install.packages("tidyverse")
+library(tidyverse)
+```
+
+```{r}
+install.packages("lubridate")
+library(lubridate)
+```
+# Turbine Aggregation
+## Importing the turbine data
+
+```{r}
+all_turbine = read.csv(file.choose(),header=T)
+```
+
+## Making the column time_interval a time object
+
+```{r }
+# R doesn't know start_date and end_date are dates - they were read in as numeric
+# convert those both to date objects
+all_turbine$Time = ymd_hms(all_turbine$Time)
+```
+
+## Rounding the time_interval column to "10 minutes"
+
+```{r}
+all_turbine$interval_time = round_date(all_turbine$Time, "10 mins")
+```
+
+## Writing all_turbine data to a csv file
+```{r}
+# Writing all_turbine data to a csv file
+write_csv(all_turbine, path = "all_turbine.csv")
+```
+
+
+# WindSpeed Aggregation
+## Importing the WindSpeed data
+
+```{r}
+All_windspeed = read.csv(file.choose(),header=T)
+```
+
+## Making the column time_interval a time object
+
+```{r }
+# R doesn't know start_date and end_date are dates - they were read in as numeric
+# convert those both to date objects
+All_windspeed$TimeStamp = ymd_hms(All_windspeed$TimeStamp)
+```
+
+## Rounding the time_interval column to "10 minutes"
+```{r}
+All_windspeed$interval_time = round_date(All_windspeed$TimeStamp, "10 mins")
+```
+
+## Writing All_windspeed data to a csv file
+```{r}
+# Writing all_generator_rpm data to a csv file
+write_csv(All_windspeed, file = "/Users/gonzalovaldenebro/Library/CloudStorage/OneDrive-DrakeUniversity/STAT 190/Project 1/Data/All_windspeed.csv")
+```
+
+
+# Generator RPM Aggregation
+## Importing the WindSpeed data
+```{r}
+all_generator_rpm = read.csv(file.choose(),header=T)
+```
+
+## Making the column time_interval a time object
+```{r }
+# R doesn't know start_date and end_date are dates - they were read in as numeric
+# convert those both to date objects
+all_generator_rpm$TimeStamp = ymd_hms(all_generator_rpm$TimeStamp)
+```
+
+## Rounding the time_interval column to "10 minutes"
+```{r}
+all_generator_rpm$interval_time = round_date(all_generator_rpm$TimeStamp, "10 mins")
+```
+
+## Writing all_turbine data to a csv file
+```{r}
+# Writing all_generator_rpm data to a csv file
+write_csv(all_generator_rpm, file = "/Users/gonzalovaldenebro/Library/CloudStorage/OneDrive-DrakeUniversity/STAT 190/Project 1/Data/all_generator_rpm.csv")
+```
+

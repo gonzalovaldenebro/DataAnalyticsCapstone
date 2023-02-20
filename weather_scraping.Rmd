@@ -1,0 +1,55 @@
+---
+title: "Scraping Weather Data"
+author: "Dr. Lendie Follett"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+I am using using the `reticulate` package, which allows R to interface with Python. That is, you can write Python programs within RStudio's friendly interface. In addition, you can switch between R and Python in the same script. Further, this particular document is written in RMarkdown to serve as an illustration for those who are interested. You are welcome to simply program in Python if you prefer or attempt this purely in R. It is up to you.
+
+```{r setup, include = TRUE }
+library(reticulate)
+```
+
+One of our options is to scrape data from Weather.gov. In a browser, go to: [<https://graphical.weather.gov/xml/SOAP_server/ndfdXML.htm>]. You can set the parameters you want and then submit. Copy the resulting url.
+
+```{python}
+from bs4 import BeautifulSoup
+import requests
+import html.parser
+import lxml
+
+#in console
+url = "https://graphical.weather.gov/xml/SOAP_server/ndfdXMLclient.php?whichClient=NDFDgen&lat=38.99&lon=-77.01&listLatLon=&lat1=&lon1=&lat2=&lon2=&resolutionSub=&listLat1=&listLon1=&listLat2=&listLon2=&resolutionList=&endPoint1Lat=&endPoint1Lon=&endPoint2Lat=&endPoint2Lon=&listEndPoint1Lat=&listEndPoint1Lon=&listEndPoint2Lat=&listEndPoint2Lon=&zipCodeList=&listZipCodeList=&centerPointLat=&centerPointLon=&distanceLat=&distanceLon=&resolutionSquare=&listCenterPointLat=&listCenterPointLon=&listDistanceLat=&listDistanceLon=&listResolutionSquare=&citiesLevel=&listCitiesLevel=&sector=&gmlListLatLon=&featureType=&requestedTime=&startTime=&endTime=&compType=&propertyName=&product=time-series&begin=2023-01-26T00%3A00%3A00&end=2027-01-26T00%3A00%3A00&Unit=e&maxt=maxt&Submit=Submit"
+#to get data from website
+file = requests.get(url)
+file.status_code #200 means the page downloades successfully
+
+#see content
+file.content
+
+type(file.content)
+
+type(file.text)
+#the above three lines aren't necessary 
+
+soup = BeautifulSoup(file.text, "lxml")
+#FeatureNotFound: Couldn't find a tree builder with the features you requested: lxml. Do you need to install a parser library?
+
+
+print(soup.prettify())
+
+#woah
+list(soup.children)
+
+```
+
+This should give you a basic idea of how to get a snapshot of weather - though it isn't "data-framed" yet.
+
+What BHE does is as follows \* Choose the number of days in the past to gather info on \* Create a vector of lats, longs that are of interest \* Loop over the lat long combinations and collect the url string from each
+
+You can see an example of how this works in a code snippet:
+
+![](weather_scraping_loop.png)
+
+With the resulting url vector, you could use something like the above code to then collect weather information from each location.
